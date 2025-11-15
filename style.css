@@ -1,63 +1,114 @@
+/* GLOBAL STYLES */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #f3faff;
+  color: #fff;
+  animation: bgAnimation 10s infinite alternate;
 }
 
-/* Header */
+/* BACKGROUND ANIMATION */
+@keyframes bgAnimation {
+  0% { background: #004d99; }
+  50% { background: #0066cc; }
+  100% { background: #0099ff; }
+}
+
+/* HEADER */
 header {
-  background: #003366;
-  color: white;
   text-align: center;
   padding: 15px;
+  background: rgba(0,0,0,0.3);
+  font-size: 22px;
+  font-weight: bold;
+  backdrop-filter: blur(3px);
 }
 
-/* Menu */
+/* NAVBAR */
 nav {
-  background: #0055aa;
+  background: rgba(0,0,0,0.4);
   display: flex;
   justify-content: center;
-  flex-wrap: wrap;
+  gap: 20px;
+  padding: 12px;
+  position: sticky;
+  top: 0;
+  backdrop-filter: blur(4px);
 }
+
 nav a {
-  color: white;
-  padding: 15px;
+  color: #fff;
   text-decoration: none;
   font-weight: bold;
+  padding: 8px 15px;
+  border-radius: 6px;
+  transition: 0.3s;
 }
+
 nav a:hover {
-  background: #003366;
+  background: #00ccff;
+  color: #000;
 }
 
-/* Banner */
-.banner {
-  background: url("https://picsum.photos/1200/300") center/cover;
-  height: 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  color: white;
-  text-shadow: 2px 2px 5px black;
-  text-align: center;
-}
-
-/* Content */
+/* CONTENT */
 .content {
   padding: 20px;
+  animation: fadeIn 1.5s ease-in;
+}
+
+/* TABLE */
+table {
+  background: rgba(255,255,255,0.1);
+  border-collapse: collapse;
+  width: 100%;
+  color: white;
+}
+
+th, td {
+  border: 1px solid #fff;
+  padding: 10px;
   text-align: center;
 }
 
-/* Footer */
-footer {
-  background: #003366;
-  color: white;
-  text-align: center;
-  padding: 10px;
-  margin-top: 20px;
+th {
+  background: rgba(0,0,0,0.5);
 }
+
+tr:hover {
+  background: rgba(255,255,255,0.2);
+}
+
+/* SUBJECT LIST */
+.subjects {
+  margin-top: 20px;
+  padding: 15px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 8px;
+  line-height: 25px;
+  font-size: 14px;
+}
+
+/* SIGNATURE BLOCK */
 .footer {
-        margin-top: 40px;
-        display: flex;
-        justify-content: space-between;
-        font-weight: bold;
-    }
+  margin-top: 25px;
+  display: flex;
+  justify-content: space-around;
+  font-weight: bold;
+  backdrop-filter: blur(3px);
+  padding: 10px;
+  color: #fff;
+}
+
+/* FOOTER */
+footer {
+  text-align: center;
+  padding: 15px;
+  margin-top: 15px;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(3px);
+}
+
+/* FADE IN ANIMATION */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
