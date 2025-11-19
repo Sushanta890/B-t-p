@@ -1,0 +1,53 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Login</title>
+  <style>
+    body{font-family:system-ui,Segoe UI,Roboto;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f7f9fc}
+    .card{background:#fff;padding:20px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.06);width:320px}
+    input,button{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:1px solid #ddd}
+    button{background:#0b74ff;color:#fff;border:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h3>Login</h3>
+    <input id="acc" placeholder="Account number" />
+    <input id="cust" placeholder="Customer ID" />
+    <button id="loginBtn">Login</button>
+    <div id="msg" style="margin-top:10px;color:#b00"></div>
+    <p style="font-size:12px;margin-top:8px">New? <a href="register.html">Register</a></p>
+  </div>
+
+  <script>
+    const API_BASE = 'http://127.0.0.1:5000';
+    document.getElementById('loginBtn').onclick = async () => {
+      const acc = document.getElementById('acc').value.trim();
+      const cust = document.getElementById('cust').value.trim();
+      const msg = document.getElementById('msg');
+      msg.innerText = '';
+      if (!acc || !cust) { msg.innerText='Enter both fields'; return; }
+      try {
+        const r = await fetch(API_BASE + '/login', {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({account_number:acc, customer_id:cust})
+        });
+        const data = await r.json();
+        if (data.success) {
+          // store minimal session
+          localStorage.setItem('account_number', data.user.account_number);
+          localStorage.setItem('customer_id', data.user.customer_id);
+          // redirect to dashboard
+          location.href = 'dashboard.html';
+        } else {
+          msg.innerText = data.message || 'Login failed';
+        }
+      } catch (e) {
+        msg.innerText = 'Network error: ' + e.message;
+      }
+    };
+  </script>
+</body>
+</html>
