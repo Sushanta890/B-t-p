@@ -1,78 +1,96 @@
-<!doctype html>
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8"/>
-  <title>S.K Bank – Home</title>
-  <style>
-    body{
-      margin:0;
-      font-family: system-ui, Roboto, Segoe UI;
-      background: linear-gradient(135deg,#0b74ff,#63a4ff);
-      color:#fff;
-      text-align:center;
-      padding:40px 20px;
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jarvis Voice Assistant</title>
+<style>
+    body {
+        font-family: 'Arial', sans-serif;
+        background: linear-gradient(to right, #1f1c2c, #928dab);
+        color: white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        flex-direction: column;
+        text-align: center;
     }
-    .container{
-      max-width:700px;
-      margin:auto;
+    button {
+        padding: 15px 30px;
+        font-size: 18px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background-color: #ff4e50;
+        color: white;
+        margin-top: 20px;
+        transition: 0.3s;
     }
-    h1{
-      font-size:32px;
-      font-weight:700;
-      margin-bottom:10px;
+    button:hover {
+        background-color: #f9d423;
+        color: black;
     }
-    p{
-      font-size:17px;
-      opacity:0.9;
-      margin-bottom:20px;
+    #output {
+        margin-top: 20px;
+        font-size: 20px;
     }
-    .card{
-      background:#ffffff;
-      color:#333;
-      padding:20px;
-      border-radius:10px;
-      box-shadow:0 8px 25px rgba(0,0,0,0.13);
-      margin-top:25px;
-    }
-    .btn{
-      display:block;
-      padding:12px;
-      background:#0b74ff;
-      color:#fff;
-      text-decoration:none;
-      font-size:18px;
-      font-weight:600;
-      border-radius:6px;
-      margin:12px 0;
-    }
-    .btn:hover{
-      background:#095ccc;
-    }
-    footer{
-      margin-top:40px;
-      opacity:0.8;
-      font-size:13px;
-    }
-  </style>
+</style>
 </head>
 <body>
 
-  <div class="container">
-    <h1>Welcome to S.K Bank</h1>
-    <p>Your trusted digital banking partner — fast, secure, easy.</p>
+<h1>Jarvis Voice Assistant</h1>
+<button id="start-btn">Speak</button>
+<div id="output"></div>
 
-    <div class="card">
-      <h2>Get Started</h2>
+<script>
+    const startBtn = document.getElementById('start-btn');
+    const output = document.getElementById('output');
 
-      <a class="btn" href="register.html">Open New Account</a>
-      <a class="btn" href="login.html">Login to Your Account</a>
+    // Speech Recognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'en-US';
 
-    </div>
+    recognition.onstart = () => {
+        output.textContent = 'Listening...';
+    };
 
-    <footer>
-      © 2025 S.K Bank — All Rights Reserved.
-    </footer>
-  </div>
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        output.textContent = 'You said: ' + transcript;
+        speakResponse(transcript);
+    };
+
+    recognition.onerror = (event) => {
+        output.textContent = 'Error: ' + event.error;
+    };
+
+    startBtn.addEventListener('click', () => {
+        recognition.start();
+    });
+
+    // Speech Synthesis
+    function speakResponse(text) {
+        const synth = window.speechSynthesis;
+        let response = '';
+
+        // Simple responses (Jarvis style)
+        if (text.toLowerCase().includes('hello')) {
+            response = 'Hello, Sir. How can I help you today?';
+        } else if (text.toLowerCase().includes('time')) {
+            const now = new Date();
+            response = `The current time is ${now.getHours()}:${now.getMinutes()}`;
+        } else {
+            response = "I'm here, waiting for your command!";
+        }
+
+        const utterance = new SpeechSynthesisUtterance(response);
+        utterance.pitch = 1.2;
+        utterance.rate = 1;
+        synth.speak(utterance);
+    }
+</script>
 
 </body>
 </html>
