@@ -14,26 +14,32 @@
 <body>
   <div class="card">
     <h3>Fast Registration</h3>
-    <input id="first" placeholder="First name" />
-    <input id="last" placeholder="Last name" />
-    <input id="mobile" placeholder="Mobile number" />
-    <button id="regBtn">Register</button>
-    <div id="result" class="result" style="display:none"></div>
-    <p style="font-size:12px;margin-top:8px">Already registered? <a href="login.html">Login</a></p>
-  </div>
+   <input id="fn" placeholder="First Name">
+<input id="ln" placeholder="Last Name">
+<input id="mobile" placeholder="Mobile Number">
+<button onclick="registerUser()">Register</button>
+
+<p id="output"></p>
 
   <script>
-    const API_BASE = 'http://127.0.0.1:5000'; // change to device IP if needed
-    document.getElementById('regBtn').onclick = async () => {
-      const first = document.getElementById('first').value.trim();
-      const last = document.getElementById('last').value.trim();
-      const mobile = document.getElementById('mobile').value.trim();
-      const resultBox = document.getElementById('result');
-      resultBox.style.display = 'none';
+    const API_BASE = "http://192.168.168.171:5000";
 
-      if (!first || !last || !mobile) {
-        resultBox.style.display='block'; resultBox.innerText='Please fill all fields'; return;
-      }
+function registerUser() {
+  fetch(API_BASE + "/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        first_name: document.getElementById("fn").value,
+        last_name: document.getElementById("ln").value,
+        mobile: document.getElementById("mobile").value
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      document.getElementById("output").innerHTML =
+        "Account: " + data.account_no + "<br>Customer ID: " + data.customer_id;
+    });
+}
 
       try {
         const resp = await fetch(API_BASE + '/register', {

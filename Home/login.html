@@ -13,41 +13,33 @@
 <body>
   <div class="card">
     <h3>Login</h3>
-    <input id="acc" placeholder="Account number" />
-    <input id="cust" placeholder="Customer ID" />
-    <button id="loginBtn">Login</button>
-    <div id="msg" style="margin-top:10px;color:#b00"></div>
-    <p style="font-size:12px;margin-top:8px">New? <a href="register.html">Register</a></p>
-  </div>
+    <input id="acc" placeholder="Account Number">
+<input id="cid" placeholder="Customer ID">
+<button onclick="loginUser()">Login</button>
+
+<p id="result"></p>
 
   <script>
-    const API_BASE = 'http://127.0.0.1:5000';
-    document.getElementById('loginBtn').onclick = async () => {
-      const acc = document.getElementById('acc').value.trim();
-      const cust = document.getElementById('cust').value.trim();
-      const msg = document.getElementById('msg');
-      msg.innerText = '';
-      if (!acc || !cust) { msg.innerText='Enter both fields'; return; }
-      try {
-        const r = await fetch(API_BASE + '/login', {
-          method:'POST',
-          headers:{'Content-Type':'application/json'},
-          body: JSON.stringify({account_number:acc, customer_id:cust})
-        });
-        const data = await r.json();
-        if (data.success) {
-          // store minimal session
-          localStorage.setItem('account_number', data.user.account_number);
-          localStorage.setItem('customer_id', data.user.customer_id);
-          // redirect to dashboard
-          location.href = 'dashboard.html';
-        } else {
-          msg.innerText = data.message || 'Login failed';
-        }
-      } catch (e) {
-        msg.innerText = 'Network error: ' + e.message;
-      }
-    };
-  </script>
+    const API_BASE = "http://192.168.168.171:5000";
+
+function loginUser() {
+fetch(API_BASE + "/login", {
+method: "POST",
+headers: { "Content-Type": "application/json" },
+body: JSON.stringify({
+account_no: document.getElementById("acc").value,
+customer_id: document.getElementById("cid").value
+})
+})
+.then(res => res.json())
+.then(data => {
+if (data.status === "success") {
+document.getElementById("result").innerHTML =
+"Welcome " + data.full_name + "<br>Account No: " + data.account_no;
+} else {
+document.getElementById("result").innerHTML = "Login Failed!";
+}
+})
+}
 </body>
 </html>
