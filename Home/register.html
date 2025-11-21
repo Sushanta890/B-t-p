@@ -1,120 +1,60 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-<title>SK Bank</title>
-<style>
-body {
-  margin: 0;
-  font-family: Arial;
-  background: linear-gradient(120deg, #007bff, #00d4ff);
-  color: white;
-  text-align: center;
-  animation: fadeIn 1.2s ease-in-out;
-}
-
-@keyframes fadeIn {
-  from {opacity: 0;}
-  to {opacity: 1;}
-}
-
-.container {
-  margin: 30px auto;
-  width: 300px;
-  background: rgba(255,255,255,0.1);
-  padding: 20px;
-  border-radius: 15px;
-  backdrop-filter: blur(8px);
-  animation: slideUp 0.8s ease;
-}
-
-@keyframes slideUp {
-  from {transform: translateY(40px); opacity: 0;}
-  to {transform: translateY(0); opacity: 1;}
-}
-
-input {
-  width: 90%;
-  padding: 10px;
-  margin: 10px 0;
-  border-radius: 8px;
-  border: none;
-}
-
-button {
-  background: yellow;
-  color: black;
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: 10px;
-}
-</style>
+  <meta charset="utf-8">
+  <title>Register</title>
+  <style>
+    body{background:linear-gradient(135deg,#00c6ff,#0072ff);font-family:Arial;color:#111;padding:20px}
+    .card{max-width:520px;margin:20px auto;background:#fff;padding:28px;border-radius:12px;box-shadow:0 6px 22px rgba(0,0,0,.12)}
+    input{width:100%;padding:12px;margin:8px 0;border-radius:8px;border:1px solid #333}
+    button{width:100%;padding:12px;background:#000;color:#fff;border-radius:8px;border:none}
+    #msg{margin-top:12px}
+  </style>
 </head>
-
 <body>
-<h2>SK Bank Registration</h2>
-
-<div class="container">
-  <input id="fname" type="text" placeholder="First Name">
-  <input id="lname" type="text" placeholder="Last Name">
-
-  <button onclick="registerUser()">Register</button>
-  <div id="result"></div>
-</div>
-
-<h2>Login</h2>
-
-<div class="container">
-  <input id="mobileLogin" type="text" placeholder="Enter Mobile Number">
-
-  <button onclick="loginUser()">Login</button>
-  <div id="loginResult"></div>
-</div>
+  <div class="card">
+    <h2>Registration</h2>
+    <input id="first" placeholder="First name">
+    <input id="last" placeholder="Last name">
+    <input id="mobile" placeholder="Mobile number">
+    <input id="email" placeholder="Email">
+    <input id="password" type="password" placeholder="Password">
+    <input id="repassword" type="password" placeholder="Re-enter password">
+    <button onclick="register()">Register</button>
+    <div id="msg"></div>
+  </div>
 
 <script>
-function registerUser(){
-    fetch("http://127.0.0.1:5000/register", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            first_name: document.getElementById("fname").value,
-            last_name: document.getElementById("lname").value
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        document.getElementById("result").innerHTML = `
-            <p>Mobile: ${data.mobile}</p>
-            <p>Account No: ${data.account_number}</p>
-            <p>Customer ID: ${data.customer_id}</p>
-        `;
-    });
-}
+const API_BASE = "http://192.168.129.171:5000"; // <- CHANGE IF YOUR IP CHANGES
 
-function loginUser(){
-    fetch("http://127.0.0.1:5000/login", {
-        method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({
-            mobile: document.getElementById("mobileLogin").value
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
-        if(data.status === "success"){
-            document.getElementById("loginResult").innerHTML = `
-                <p>Welcome: ${data.full_name}</p>
-                <p>Account No: ${data.account_number}</p>
-                <p>Customer ID: ${data.customer_id}</p>
-            `;
-        } else {
-            document.getElementById("loginResult").innerHTML = "<p>Invalid Mobile Number!</p>";
-        }
+async function register(){
+  const first = document.getElementById('first').value.trim();
+  const last  = document.getElementById('last').value.trim();
+  const mobile= document.getElementById('mobile').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const pass  = document.getElementById('password').value;
+  const rep   = document.getElementById('repassword').value;
+
+  if(!first||!last||!mobile||!email||!pass){ alert("Fill all fields"); return; }
+  if(pass !== rep){ alert("Passwords do not match"); return; }
+
+  try{
+    const res = await fetch(API_BASE + "/register", {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({first,last,mobile,email,password:pass})
     });
+    const data = await res.json();
+    if(res.ok && data.status === "success"){
+      document.getElementById('msg').innerHTML = `<b>Account:</b> ${data.account_number} <br> <b>Customer ID:</b> ${data.customer_id}`;
+    } else {
+      document.getElementById('msg').innerText = data.msg || JSON.stringify(data);
+    }
+  }catch(err){
+    alert("Error: Cannot connect to server. Make sure API is running and API_BASE uses your phone IP.");
+    console.error(err);
+  }
 }
 </script>
-
 </body>
 </html>

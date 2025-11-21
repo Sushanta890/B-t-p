@@ -1,45 +1,38 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8"/>
-  <title>Login</title>
-  <style>
-    body{font-family:system-ui,Segoe UI,Roboto;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;background:#f7f9fc}
-    .card{background:#fff;padding:20px;border-radius:8px;box-shadow:0 6px 20px rgba(0,0,0,0.06);width:320px}
-    input,button{width:100%;padding:10px;margin:8px 0;border-radius:6px;border:1px solid #ddd}
-    button{background:#0b74ff;color:#fff;border:none}
-  </style>
-</head>
+<head><meta charset="utf-8"><title>Login</title></head>
 <body>
-  <div class="card">
-    <h3>Login</h3>
-    <input id="acc" placeholder="Account Number">
-<input id="cid" placeholder="Customer ID">
-<button onclick="loginUser()">Login</button>
+  <div style="max-width:480px;margin:40px auto;font-family:Arial">
+    <h2>Login (by Mobile)</h2>
+    <input id="mobile" placeholder="Mobile"><br><br>
+    <button onclick="login()">Login</button>
+    <div id="out"></div>
+  </div>
 
-<p id="result"></p>
-
-  <script>
-    const API_BASE = "http://192.168.168.171:5000";
-
-function loginUser() {
-fetch(API_BASE + "/login", {
-method: "POST",
-headers: { "Content-Type": "application/json" },
-body: JSON.stringify({
-account_no: document.getElementById("acc").value,
-customer_id: document.getElementById("cid").value
-})
-})
-.then(res => res.json())
-.then(data => {
-if (data.status === "success") {
-document.getElementById("result").innerHTML =
-"Welcome " + data.full_name + "<br>Account No: " + data.account_no;
-} else {
-document.getElementById("result").innerHTML = "Login Failed!";
+<script>
+const API_BASE = "http://192.168.129.171:5000";
+async function login(){
+  const mobile = document.getElementById('mobile').value.trim();
+  if(!mobile){alert("Enter mobile");return;}
+  try{
+    const res = await fetch(API_BASE + "/login", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({mobile})
+    });
+    const data = await res.json();
+    if(res.ok && data.status==="success"){
+      // store to localStorage and redirect to dashboard
+      localStorage.setItem("user", JSON.stringify(data));
+      window.location = "dashboard.html";
+    } else {
+      document.getElementById('out').innerText = data.msg || JSON.stringify(data);
+    }
+  }catch(e){
+    alert("Cannot connect to server");
+    console.error(e);
+  }
 }
-})
-}
+</script>
 </body>
 </html>

@@ -1,57 +1,20 @@
 <!doctype html>
 <html>
-<head>
-  <meta charset="utf-8"/>
-  <title>Dashboard</title>
-  <style>
-    body{font-family:system-ui,Segoe UI,Roboto;padding:20px;background:#eef4ff}
-    .box{max-width:700px;margin:40px auto;background:#fff;padding:20px;border-radius:8px;box-shadow:0 8px 30px rgba(0,0,0,0.06)}
-    .row{display:flex;gap:12px;align-items:center}
-    button{padding:8px 12px;border-radius:6px;border:none;background:#0b74ff;color:#fff}
-    pre{background:#f6f9ff;padding:12px;border-radius:6px}
-  </style>
-</head>
-<body>
-  <div class="box">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <h2>Account Dashboard</h2>
-      <div><button id="logout">Logout</button></div>
-    </div>
-    <div id="content">Loading...</div>
-  </div>
-
+<head><meta charset="utf-8"><title>Dashboard</title></head>
+<body style="font-family:Arial;max-width:720px;margin:30px auto">
+  <h2>Dashboard</h2>
+  <div id="info"></div>
+  <hr>
+  <a href="deposit.html">Deposit</a> | <a href="withdraw.html">Withdraw</a>
   <script>
-    const API_BASE = 'http://127.0.0.1:5000';
-    const acc = localStorage.getItem('account_number');
-    const cust = localStorage.getItem('customer_id');
-    const content = document.getElementById('content');
-
-    if (!acc || !cust) {
-      content.innerHTML = '<p>Please <a href="login.html">login</a>.</p>';
-    } else {
-      fetch(API_BASE + '/user/' + encodeURIComponent(acc))
-        .then(r => r.json())
-        .then(data => {
-          if (data.success) {
-            const u = data.user;
-            content.innerHTML = `
-              <p><strong>Full name:</strong> ${u.first_name} ${u.last_name}</p>
-              <p><strong>Mobile:</strong> ${u.mobile}</p>
-              <p><strong>Account number:</strong> <code>${u.account_number}</code></p>
-              <p><strong>Customer ID:</strong> <code>${u.customer_id}</code></p>
-            `;
-          } else {
-            content.innerHTML = '<p>User not found or session expired. <a href="login.html">Login</a></p>';
-          }
-        })
-        .catch(err => { content.innerText = 'Network error: ' + err.message; });
-    }
-
-    document.getElementById('logout').onclick = () => {
-      localStorage.removeItem('account_number');
-      localStorage.removeItem('customer_id');
-      location.href = 'login.html';
-    };
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+    if(!user){ alert("Not logged in"); window.location = "login.html"; }
+    document.getElementById('info').innerHTML = `
+      <b>Name:</b> ${user.name} <br>
+      <b>Account:</b> ${user.account_number} <br>
+      <b>Customer ID:</b> ${user.customer_id} <br>
+      <b>Balance:</b> ${user.balance}
+    `;
   </script>
 </body>
 </html>
